@@ -2,11 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0 }
-      #map-canvas { height: 100% }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDusgVbcYaUqaWD6-ORU2vHgE3mqwkKamA&sensor=false">
     </script>
@@ -16,6 +12,17 @@
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
+  <form id="route-finder">
+  	<h2>Welcome to Route-finder. Please type in the addresses in the fileds provided.</h2>
+	<br/>
+	<br/>
+	Starting address: <input type="text" id="startaddr" placeholder="Enter the starting address" autofocus required />
+	<br/>
+	Destination address(es) : <br/>
+	<textarea rows="5" cols="50" id="destaddr" placeholder="Enter the address of subsequent places of interest one per line" required ></textarea>
+	<br/>
+	<button type="submit" id="submit" formaction="validate.js">Submit</button>
+  </form>
   <body>
     <div id="map-canvas"/>
   </body>
