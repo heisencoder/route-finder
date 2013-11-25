@@ -1,0 +1,21 @@
+Metadata-Version: 1.1
+Name: pymprog
+Version: 0.4.2
+Summary: PyMathProg, easy linear/integer programming with Python.
+Home-page: http://pymprog.sf.net/
+Author: Yingjie Lan
+Author-email: ylan@umd.edu
+License: GPL
+Description: PyMathProg is a Python reincarnation of AMPL and 
+        GNU MathProg modeling language, implemented in pure Python, 
+        connecting to GLPK via PyGLPK. Create, optimize, report, 
+        change and re-optimize your model with Python, 
+        which offers numerous handy goodies.
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python
+Classifier: Operating System :: Platform Independent
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
