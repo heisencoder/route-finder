@@ -1,3 +1,4 @@
+'use strict';
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var distanceMatrixService = new google.maps.DistanceMatrixService();
@@ -6,18 +7,18 @@ var map;
 /**
  * Called when the page is loaded and performs all needed initialization.
  */
-initialize = function() {
+function initialize() {
   directionsDisplay = new google.maps.DirectionsRenderer();
   var mapOptions = {
     center: new google.maps.LatLng(40.006756,-105.263618),
     zoom: 13
   };
-  var map = new google.maps.Map(document.getElementById("map-canvas"),
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
   directionsDisplay.setMap(map);
 }
 
-calcRoute = function() {
+function calcRoute() {
   var start = document.getElementById('startaddr').value;
   var waypoints = document.getElementById('destaddr').value.split('\n');
   // Strip off leading and trailing whitespace.
