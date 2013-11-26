@@ -25,14 +25,15 @@ function calcRoute() {
   waypoints = waypoints.map(function(value) {
     return value.replace(/^\s+/, '').replace(/\s+$/, '');
   });
-  var addresses = [start].concat(waypoints);
   // Remove empty addresses.
   waypoints = waypoints.filter(function(value) { return value; });
+  var addresses = [start].concat(waypoints);
   var dmRequest = {
     origins: addresses,
     destinations: addresses,
     travelMode: google.maps.TravelMode.DRIVING
   };
+  console.log(addresses);
 
   distanceMatrixService.getDistanceMatrix(dmRequest,
       function(dmResponse, dmStatus) {
@@ -47,6 +48,13 @@ function calcRoute() {
         });
         console.log(request);
         var http = new XMLHttpRequest();
+        http.addEventListener('loadend', function(e) {
+          var response = e.target;
+          if (response.status == 200) {
+            var ordering = JSON.parse(response.response);
+            console.log(ordering);
+          }
+        }, false);
         http.open("POST", "lpsolver/solver.request", true);
         http.setRequestHeader("Content-type", "application/json");
         http.send(request);
