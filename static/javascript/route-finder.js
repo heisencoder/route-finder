@@ -38,6 +38,18 @@ function calcRoute() {
       function(dmResponse, dmStatus) {
         console.log(dmResponse);
         console.log(dmStatus);
+        var matrix = makeJsonMatrix(dmResponse);
+        var request = JSON.stringify({
+          'start': 1,
+          'n': matrix.length,
+          'travelMatrix': matrix,
+          'end': 1
+        });
+        console.log(request);
+        var http = new XMLHttpRequest();
+        http.open("POST", "lpsolver/solver.request", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.send(request);
       });
   /*
   var request = {
@@ -51,4 +63,17 @@ function calcRoute() {
     }
   });
   */
+}
+
+function makeJsonMatrix(dmResponse) {
+  var rows = dmResponse.rows;
+  var matrix = [];
+  for (var row = 0; row < rows.length; row++) {
+    matrix[row] = [];
+    var elements = rows[row].elements;
+    for (var col = 0; col < elements.length; col++) {
+      matrix[row][col] = elements[col].duration.value;
+    }
+  }
+  return matrix;
 }
