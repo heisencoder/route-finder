@@ -1,37 +1,38 @@
 html, body {
 		height: 100%;
 		margin: 0px;
-		padding: 0px
+		padding: 0px;
            }
 #route-finder {
 		position: absolute;
-		top: 5px;
-		width: 30%;
+		width: 550px;
 		height: 100%;
 		float:left;
 		background-color: #fff;
-		padding: 5px;
-		border: 1px solid #999;
 		background-image:url('../images/compass.jpeg');
+		display:block
 	      }
+
+#content {
+		top: 50px;
+	 }
 
 #map-canvas {
 		height: 100%;
 		margin: 0px;
 		padding: 0px;
-		width:70%;
-		margin-left:30%
+		margin-left:550px
 	    }
 
 #startaddr {
 		margin-left: 5px;
-		width: 400px;
+		width: 65%;
 	   }
 
 #destaddr {
 		margin-left: 19px;
 		vertical-align:top;
-		width:400px;
+		width:65%;
 	  }
 
 #submit {
