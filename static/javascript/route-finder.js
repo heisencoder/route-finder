@@ -39,6 +39,7 @@ function calcRoute() {
       function(dmResponse, dmStatus) {
         console.log(dmResponse);
         console.log(dmStatus);
+        var addresses = dmResponse.originAddresses;
         var matrix = makeJsonMatrix(dmResponse);
         var request = JSON.stringify({
           'start': 1,
@@ -53,6 +54,25 @@ function calcRoute() {
           if (response.status == 200) {
             var ordering = JSON.parse(response.response);
             console.log(ordering);
+            var waypts = [];
+            for (var i = 1; i < ordering.length; i++) {
+              waypts.push({
+                location: addresses[ordering[i] - 1],
+                stopover: true});
+            }
+            var request = {
+              origin: addresses[0],
+              destination: addresses[0],
+              waypoints: waypts,
+              optimizeWaypoints: true,
+              travelMode: google.maps.TravelMode.DRIVING
+            };
+            console.log(request);
+            directionsService.route(request, function(response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+              }
+            });
           }
         }, false);
         http.open("POST", "lpsolver/solver.request", true);
@@ -60,16 +80,6 @@ function calcRoute() {
         http.send(request);
       });
   /*
-  var request = {
-    origin:start,
-    destination:end,
-    travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-    }
-  });
   */
 }
 
