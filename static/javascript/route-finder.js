@@ -41,12 +41,16 @@ function calcRoute() {
         console.log(dmStatus);
         var addresses = dmResponse.originAddresses;
         var matrix = makeJsonMatrix(dmResponse);
-        var request = JSON.stringify({
+        var requestObj = {
           'start': 1,
           'n': matrix.length,
           'travelMatrix': matrix,
-          'end': 1
-        });
+        };
+        var returnToStart = document.getElementById('return').checked;
+        if (returnToStart) {
+          requestObj.end = 1;
+        }
+        var request = JSON.stringify(requestObj);
         console.log(request);
         var http = new XMLHttpRequest();
         http.addEventListener('loadend', function(e) {
@@ -55,14 +59,16 @@ function calcRoute() {
             var ordering = JSON.parse(response.response);
             console.log(ordering);
             var waypts = [];
-            for (var i = 1; i < ordering.length; i++) {
+            var orderingCount = ordering.length - (returnToStart ? 0 : 1);
+            for (var i = 1; i < orderingCount; i++) {
               waypts.push({
                 location: addresses[ordering[i] - 1],
                 stopover: true});
             }
+            var dest = returnToStart ? addresses[0] : addresses[addresses.length - 1];
             var request = {
               origin: addresses[0],
-              destination: addresses[0],
+              destination: dest,
               waypoints: waypts,
               optimizeWaypoints: true,
               travelMode: google.maps.TravelMode.DRIVING
