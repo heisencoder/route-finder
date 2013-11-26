@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# This script will launch a django server.  This needs to be run from the same
+# directory where this script resides.
+
+export PYTHONPATH=third_party/lib/python
+
+python server/manage.py runserver $*
