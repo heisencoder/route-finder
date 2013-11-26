@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYTHONPATH=../third_party/lib/python
+
+python manage.py runserver $*
