@@ -5,24 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 import pymprog
 
-# Is this correctly solving the problem?
 
-# This decorator marks a view as being exempt from the protection ensured by the middleware.
-# Needed or we get a 403 on all POST requests
-@csrf_exempt
-def solverRequest(request):
-    print 'SOLVER REQUEST'
-    if request.method == 'POST':
-        #json_data = json.loads(request.raw_post_data)
-        print 'Raw Data: "%s"' % request.body
-    # Solves TSP given raw data like:
-    #    "{(1,2):509, (1,3):501, (1,4):312, ..."
 
-    # Should do some sanity checking
-    data = eval(request.body)
-    n = 16 # can i infer?
+def solveLP(n, data):    
     V = range(1, n+1)
-
     E = data.keys()
 
     p = pymprog.model("tsp")
@@ -50,16 +36,52 @@ def solverRequest(request):
     tour = [t for t in E if x[t].primal>.5]
     cat, car = 1, n
     print("This is the optimal tour with [cars carried]:")
+    ztour = []
     for k in V: 
-        print cat,
+        #print cat,
         for i,j in tour: 
             if i==cat: 
-                print "[%g]"%y[i,j].primal,
+                #print "[%g]"%y[i,j].primal,
+                ztour.append(cat)
                 cat=j
                 break
-    print cat
+
+    # Tour is list of edge tuples
+    # ztour, list of destinations
+    return ztour
 
 
-    # can also produce json in response
-    #return HttpResponse('OK)
-    return HttpResponse(cat)
+# Is this correctly solving the problem?
+
+# This decorator marks a view as being exempt from the protection ensured by the middleware.
+# Needed or we get a 403 on all POST requests
+@csrf_exempt
+def solverRequest(request):
+    print 'SOLVER REQUEST'
+    if request.method == 'POST':
+        #json_data = json.loads(request.raw_post_data)
+        print 'Raw Data: "%s"' % request.body
+    # Solves TSP given graph weights as list of list
+    # First index is source
+    data = json.loads(request.body)
+    #print "start:", data["start"]
+    #print "n:", data["n"]
+    #print "travelMatrix[%s]" % (len(data["travelMatrix"]),)
+
+    n = data["n"]
+    start = data["start"]
+    end = data["end"]
+    travelMatrix = data["travelMatrix"]
+
+    graphDict = {}
+    for i in range(0, n):
+        for j in range(0, n):
+            # {(16,13):406, (16,14):449, (16,15):636}"
+            graphDict[(i+1, j+1)] = travelMatrix[i][j]
+
+    route = solveLP(n, graphDict)
+    # print route
+    resp = json.dumps(route)
+
+    # #return HttpResponse('OK)
+    return HttpResponse(resp)
