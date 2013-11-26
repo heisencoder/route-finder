@@ -1,0 +1,5 @@
+# Source this file to set up your environment
+
+export PATH=$PATH:$(readlink -f "../third_party/bin/")
+export PYTHONPATH=$PYTHONPATH:$(readlink -f "../third_party/lib/python/")
+
