@@ -5,14 +5,14 @@ html, body {
            }
 #route-finder {
 		position: absolute;
-		width: 550px;
-		height: 100%;
+		width: 366px;
+		height: 99.7%;
 		float:left;
 		background-color: #fff;
 		background-image:url('../images/compass.jpeg');
-		display:block
+		display:block;
+		border: 1px solid grey;
 	      }
-
 #content {
 		top: 50px;
 	 }
@@ -21,18 +21,18 @@ html, body {
 		height: 100%;
 		margin: 0px;
 		padding: 0px;
-		margin-left:550px
+		margin-left:368px
 	    }
 
 #startaddr {
-		margin-left: 5px;
-		width: 65%;
+		margin-left: 19px;
+		width: 281px;
 	   }
 
 #destaddr {
 		margin-left: 19px;
 		vertical-align:top;
-		width:65%;
+		width:281px;
 	  }
 
 #submit {
