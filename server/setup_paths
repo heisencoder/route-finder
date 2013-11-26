@@ -1,3 +1,6 @@
+# NOTE FROM MATT:  I thin we want to delete this file and just create a 
+# bash script for launching the server.
+
 # Source this file to set up your environment
 
 export PATH=$PATH:$(readlink -f "../third_party/bin/")
