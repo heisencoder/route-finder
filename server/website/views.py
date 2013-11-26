@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.http import HttpResponse
 
+
+API_KEY = "AIzaSyDusgVbcYaUqaWD6-ORU2vHgE3mqwkKamA"
+
 def staticFile(request, filename):
-    f = open('templates/%s' % (filename,), 'r')
-    v = f.readlines()
-    f.close()
-    return HttpResponse(''.join(v))
+    rendered = render_to_string(filename, {"api_key" : API_KEY})
+    return HttpResponse(rendered)
