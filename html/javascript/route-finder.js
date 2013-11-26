@@ -1,5 +1,6 @@
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
+var distanceMatrixService = new google.maps.DistanceMatrixService();
 var map;
 
 /**
@@ -18,15 +19,35 @@ initialize = function() {
 
 calcRoute = function() {
   var start = document.getElementById('startaddr').value;
-  var end = document.getElementById('destaddr').value;
+  var waypoints = document.getElementById('destaddr').value.split('\n');
+  // Strip off leading and trailing whitespace.
+  waypoints = waypoints.map(function(value) {
+    return value.replace(/^\s+/, '').replace(/\s+$/, '');
+  });
+  var addresses = [start].concat(waypoints);
+  // Remove empty addresses.
+  waypoints = waypoints.filter(function(value) { return value; });
+  var dmRequest = {
+    origins: addresses,
+    destinations: addresses,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+
+  distanceMatrixService.getDistanceMatrix(dmRequest,
+      function(dmResponse, dmStatus) {
+        console.log(dmResponse);
+        console.log(dmStatus);
+      });
+  /*
   var request = {
-      origin:start,
-      destination:end,
-      travelMode: google.maps.TravelMode.DRIVING
+    origin:start,
+    destination:end,
+    travelMode: google.maps.TravelMode.DRIVING
   };
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
     }
   });
+  */
 }
