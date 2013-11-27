@@ -2,8 +2,7 @@
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var distanceMatrixService = new google.maps.DistanceMatrixService();
-var map;
-var mode;
+var map,mode,start,waypoints;
 
 /**
  * Called when the page is loaded and performs all needed initialization.
@@ -20,8 +19,8 @@ function initialize() {
 }
 
 function calcRoute() {
-  var start = document.getElementById('startaddr').value;
-  var waypoints = document.getElementById('destaddr').value.split('\n');
+  start = document.getElementById('startaddr').value;
+  waypoints = document.getElementById('destaddr').value.split('\n');
   mode = "DRIVING";
 
   var radio_mode = document.getElementsByName('travelmode');
@@ -51,6 +50,12 @@ function calcRoute() {
         console.log(dmResponse);
         console.log(dmStatus);
         var addresses = dmResponse.originAddresses;
+	document.getElementById('startaddr').value = addresses[0];
+	waypoints = "";
+	for(var i=1; i<addresses.length; i++) {
+		waypoints = waypoints + addresses[i]+'\n';
+	}
+	document.getElementById('destaddr').value = waypoints;
         var matrix = makeJsonMatrix(dmResponse);
         var requestObj = {
           'start': 1,

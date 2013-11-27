@@ -56,12 +56,16 @@ input:-moz-placeholder {
 #startaddr    {
 		margin-left: 19px;
 		width: 281px;
+		font-family: 'Arial';
+		font-size: 13px;
 	      }
 
 #destaddr,#dest {
 		margin-left: 19px;
 		vertical-align:top;
 		width:281px;
+		font-family: 'Arial';
+		font-size: 13px;
 	      }
 
 #submit       {
