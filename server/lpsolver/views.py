@@ -7,7 +7,7 @@ import pymprog
 
 
 
-def solveLP(n, data):    
+def solveLP(n, data, returnBack):    
     V = range(1, n+1)
     E = data.keys()
 
@@ -18,6 +18,7 @@ def solveLP(n, data):
     # subject to: leave each city exactly once
     p.st([sum(x[k,j] for j in V if (k,j) in E)==1 for k in V], 'leave')
     # subject to: enter each city exactly once
+    # TODO: unclosed route? if(returnBack) V[1:]
     p.st([sum(x[i,k] for i in V if (i,k) in E)==1 for k in V], 'enter')
     # We then need some flow constraints to eliminate subtours.
     # y: the number of cars carried: endowed with n at city 1.
@@ -60,7 +61,10 @@ def solverRequest(request):
     data = json.loads(request.body)
     n = data["n"]
     start = data["start"]
-    end = data["end"]
+    if "end" in data:
+        returnBack = True
+    else:
+        returnBack = False
     travelMatrix = data["travelMatrix"]
 
     # For now, build graph as dictionary (as in sample code)
@@ -70,7 +74,7 @@ def solverRequest(request):
         for j in range(0, n):
             graphDict[(i+1, j+1)] = travelMatrix[i][j]
 
-    route = solveLP(n, graphDict)
+    route = solveLP(n, graphDict, returnBack)
     print route
     resp = json.dumps(route)
 
