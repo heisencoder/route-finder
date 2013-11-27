@@ -4,6 +4,14 @@ html, body    {
 		padding: 0px;
               }
 
+h4 	      {
+
+		font-size: 20px;
+		font-weight: 1000;
+		padding: 3px 0px 0px 8px;
+		margin: 0
+	      }
+
 ::-webkit-input-placeholder { 
 		font-family: 'Times New Roman';
 		font-size: 14px;
@@ -38,9 +46,13 @@ input:-moz-placeholder {
 		height: 99.7%;
 		float:left;
 		background-color: #fff;
-		background-image:url('../images/background.jpg');
+		background-image:url('../images/background1.jpg');
 		display:block;
 		border: 1px solid grey;
+	      }
+
+#content      {
+		line-height: 25px;
 	      }
 
 #map-canvas   {
@@ -52,7 +64,7 @@ input:-moz-placeholder {
 
 #startaddr    {
 		margin-left: 19px;
-		width: 281px;
+		width: 300px;
 		font-family: 'Arial';
 		font-size: 13px;
 	      }
@@ -60,9 +72,13 @@ input:-moz-placeholder {
 #destaddr     {
 		margin-left: 19px;
 		vertical-align:top;
-		width:281px;
+		width:300px;
 		font-family: 'Arial';
 		font-size: 13px;
+	      }
+.adp 	      {
+		margin-left: 19px;
+		font-size: 14px;
 	      }
 
 #submit,#reset{
@@ -80,8 +96,8 @@ input:-moz-placeholder {
 	      }	
 
 #directions-panel {
-		height: 150px;
-	        width: 300px;
+		height: 230px;
+	        width: 320px;
 	        overflow: auto;
 		margin-left: 0px;
        	     }	

@@ -13,27 +13,27 @@
     </script>
   </head>
   <div id="route-finder">
+	<h4>Welcome to Route-finder. Please type in the addresses in the fields provided.</h4>
 	<div id="content">
-	  	<h4>Welcome to Route-finder. Please type in the addresses in the fields provided.</h4>
 		<b>Starting address: </b>
 		<br/> 
 		<input type="text" id="startaddr" placeholder="Enter the starting address" autofocus required />
-		<br/></br>
+		<br/>
 		<b>Destination(s): </b>
 		<br/>
 		<textarea rows="5" cols="50" id="destaddr" placeholder="Enter the address of subsequent places of interest one per line" required ></textarea>
-		<br/></br>
+		<br/>
 		<b>Mode of travel: </b>
 		<br/>
 		<input type="radio" name="travelmode" id="drive" value="DRIVING" checked="checked">Driving</input>
 		<input type="radio" name="travelmode" id="walk" value="WALKING">Walking</input>
 		<input type="radio" name="travelmode" id="cycle" value="BICYCLING">Bicycling</input>
-		<br/></br>
+		<br/>
 		<input type="checkbox" id="return" checked="true">Return back to starting address
-		<br/></br>
+		<br/>
 		<button type="submit" id="submit" onclick="calcRoute();">Submit</button>
 		<button type="button" id="reset" onclick="reset();">Reset</button>
-		<br/></br>
+		<br/>
 		<div id="computed-route">
 			<b>Directions for the computed route: </b>
 			<br/>		
