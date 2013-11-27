@@ -85,8 +85,6 @@ function calcRoute() {
         http.setRequestHeader("Content-type", "application/json");
         http.send(request);
       });
-  /*
-  */
 }
 
 function makeJsonMatrix(dmResponse) {
