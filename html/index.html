@@ -26,17 +26,11 @@
 		<br/><br/>
 		<b>Mode of travel: </b>
 		<br/>
-		<label><input type="radio" name="travelmode" value="DRIVING" checked="checked">Driving</label>
-		<label><input type="radio" name="travelmode" value="TRANSIT">Transit</label>       
-		<label><input type="radio" name="travelmode" value="WALKING">Walking</label>
-		<label><input type="radio" name="travelmode" value="BICYCLING">Bicycing</label>
+		<input type="radio" name="travelmode" value="DRIVING" checked="checked">Driving</input>
+		<input type="radio" name="travelmode" value="WALKING">Walking</input>
+		<input type="radio" name="travelmode" value="BICYCLING">Bicycling</input>
 		<br/><br/>
-		<b>Optimize by:</b>
-		<br/>
-		<label><input type="radio" name="optimize" value="time" checked="checked">Time</label>
-		<label><input type="radio" name="optimize" value="distance">Distance</label>
-		<br/><br/>
-		<input type="checkbox" id="return" checked="true"><b>Return back to starting address<b>
+		<input type="checkbox" id="return" checked="true">Return back to starting address
 		<br/><br/>
 		<button type="submit" id="submit" onclick="calcRoute();">Submit</button>
 	</div>
