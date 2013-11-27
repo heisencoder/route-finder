@@ -20,9 +20,21 @@
 		<br/> 
 		<input type="text" id="startaddr" placeholder="Enter the starting address" autofocus required />
 		<br/><br/>
-		<b>Destination(s) : </b>
+		<b>Destination(s): </b>
 		<br/>
 		<textarea rows="5" cols="50" id="destaddr" placeholder="Enter the address of subsequent places of interest one per line" required ></textarea>
+		<br/><br/>
+		<b>Mode of travel: </b>
+		<br/>
+		<label><input type="radio" name="travelmode" value="DRIVING" checked="checked">Driving</label>
+		<label><input type="radio" name="travelmode" value="TRANSIT">Transit</label>       
+		<label><input type="radio" name="travelmode" value="WALKING">Walking</label>
+		<label><input type="radio" name="travelmode" value="BICYCLING">Bicycing</label>
+		<br/><br/>
+		<b>Optimize by:</b>
+		<br/>
+		<label><input type="radio" name="optimize" value="time" checked="checked">Time</label>
+		<label><input type="radio" name="optimize" value="distance">Distance</label>
 		<br/><br/>
 		<input type="checkbox" id="return" checked="true"><b>Return back to starting address<b>
 		<br/><br/>

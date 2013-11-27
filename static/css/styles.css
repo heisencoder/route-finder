@@ -1,45 +1,74 @@
-html, body {
+html, body    {
 		height: 100%;
 		margin: 0px;
 		padding: 0px;
-           }
+              }
+
+::-webkit-input-placeholder { 
+		font-family: 'Times New Roman';
+		font-size: 14px;
+		font-style: normal;
+		font-variant: normal; 
+               }
+
+::-moz-placeholder { 
+	      	font-family: 'Times New Roman';
+		font-size: 14px;
+		font-style: normal;
+		font-variant: normal;
+	       } /* firefox 19+ */
+
+:-ms-input-placeholder { 
+		font-family: 'Times New Roman';
+		font-size: 14px;
+		font-style: normal;
+		font-variant: normal;
+	       } /* ie */
+
+input:-moz-placeholder { 
+		font-family: 'Times New Roman';
+		font-size: 14px;
+		font-style: normal;
+		font-variant: normal;
+ 	       }
+
 #route-finder {
 		position: absolute;
 		width: 366px;
 		height: 99.7%;
 		float:left;
 		background-color: #fff;
-		background-image:url('../images/compass.jpeg');
+		background-image:url('../images/background.jpg');
 		display:block;
 		border: 1px solid grey;
 	      }
-#content {
+#content      {
 		top: 50px;
-	 }
+	      }
 
-#map-canvas {
+#map-canvas   {
 		height: 100%;
 		margin: 0px;
 		padding: 0px;
-		margin-left:368px
-	    }
+		margin-left:366px
+	      }
 
-#startaddr {
+#startaddr    {
 		margin-left: 19px;
 		width: 281px;
-	   }
+	      }
 
 #destaddr,#dest {
 		margin-left: 19px;
 		vertical-align:top;
 		width:281px;
-	  }
+	      }
 
-#submit {
-		font-weight: bold;
-	}	
+#submit       {
+	    	font-weight: bold;
+	      }	
 
 #computed-route {
-			display: none;
-			vertical-align: top;
+		display: none;
+		vertical-align: top;
 		}

@@ -3,6 +3,7 @@ var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var distanceMatrixService = new google.maps.DistanceMatrixService();
 var map;
+var mode,optimize;
 
 /**
  * Called when the page is loaded and performs all needed initialization.
@@ -21,6 +22,25 @@ function initialize() {
 function calcRoute() {
   var start = document.getElementById('startaddr').value;
   var waypoints = document.getElementById('destaddr').value.split('\n');
+  mode = "DRIVING";
+  optimize = "time";
+
+  var radio_mode = document.getElementsByName('travelmode');
+  for(var i=0; i<radio_mode.length; i++) {
+	if(radio_mode[i].checked) {
+		mode = radio_mode[i].value;
+		break;
+        }
+  }
+
+  var radio_optimize = document.getElementsByName('optimize');
+  for(var i=0; i<radio_optimize.length; i++) {
+	if(radio_optimize[i].checked) {
+		optimize = radio_optimize[i].value;
+		break;
+	}
+  }
+    
   // Strip off leading and trailing whitespace.
   waypoints = waypoints.map(function(value) {
     return value.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -31,7 +51,7 @@ function calcRoute() {
   var dmRequest = {
     origins: addresses,
     destinations: addresses,
-    travelMode: google.maps.TravelMode.DRIVING
+    travelMode: google.maps.TravelMode[mode]
   };
   console.log(addresses);
 
@@ -71,7 +91,7 @@ function calcRoute() {
               destination: dest,
               waypoints: waypts,
               optimizeWaypoints: true,
-              travelMode: google.maps.TravelMode.DRIVING
+              travelMode: google.maps.TravelMode[mode]
             };
             console.log(request);
             directionsService.route(request, function(response, status) {
@@ -93,8 +113,15 @@ function makeJsonMatrix(dmResponse) {
   for (var row = 0; row < rows.length; row++) {
     matrix[row] = [];
     var elements = rows[row].elements;
-    for (var col = 0; col < elements.length; col++) {
-      matrix[row][col] = elements[col].duration.value;
+    if(optimize == "time") {
+	    for (var col = 0; col < elements.length; col++) {
+	      matrix[row][col] = elements[col].duration.value;
+	    }
+    }
+    else if(optimize == "distance") {
+	    for (var col = 0; col < elements.length; col++) {
+	      matrix[row][col] = elements[col].distance.value;
+	    }
     }
   }
   return matrix;
