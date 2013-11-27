@@ -16,6 +16,7 @@ function initialize() {
   var map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
   directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directions-panel'));
 }
 
 function calcRoute() {
@@ -93,6 +94,7 @@ function calcRoute() {
             directionsService.route(request, function(response, status) {
               if (status == google.maps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(response);
+		document.getElementById('computed-route').style.display = 'block';
               }
             });
           }
@@ -115,3 +117,13 @@ function makeJsonMatrix(dmResponse) {
   }
   return matrix;
 }
+
+function reset() {
+	document.getElementById('computed-route').style.display = 'none';
+	document.getElementById('startaddr').value = "";
+	document.getElementById('destaddr').value = "";
+	document.getElementById('return').checked = true;
+	document.getElementById('drive').checked = true;
+	document.getElementById('walk').checked = false;
+	document.getElementById('cycle').checked = false;
+}			

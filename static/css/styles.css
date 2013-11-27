@@ -42,9 +42,6 @@ input:-moz-placeholder {
 		display:block;
 		border: 1px solid grey;
 	      }
-#content      {
-		top: 50px;
-	      }
 
 #map-canvas   {
 		height: 100%;
@@ -60,7 +57,7 @@ input:-moz-placeholder {
 		font-size: 13px;
 	      }
 
-#destaddr,#dest {
+#destaddr     {
 		margin-left: 19px;
 		vertical-align:top;
 		width:281px;
@@ -68,11 +65,26 @@ input:-moz-placeholder {
 		font-size: 13px;
 	      }
 
-#submit       {
+#submit,#reset{
 	    	font-weight: bold;
+	      }
+
+#submit       {
+		margin-left:90px;
+		width: 61px;
+	      }
+
+#reset        {
+		margin-left: 30px;
+		width: 61px;
 	      }	
 
+#directions-panel {
+		height: 150px;
+	        width: 300px;
+	        overflow: auto;
+		margin-left: 0px;
+       	     }	
 #computed-route {
 		display: none;
-		vertical-align: top;
-       	}	
+		}
