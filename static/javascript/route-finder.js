@@ -76,13 +76,13 @@ function calcRoute() {
             var ordering = JSON.parse(response.response);
             console.log(ordering);
             var waypts = [];
-            var orderingCount = ordering.length - (returnToStart ? 0 : 1);
-            for (var i = 1; i < orderingCount; i++) {
+            var orderingCount = ordering.length;
+            for (var i = 1; i < orderingCount-1; i++) {
               waypts.push({
-                location: addresses[ordering[i] - 1],
+                location: addresses[ordering[i]-1],
                 stopover: true});
             }
-            var dest = returnToStart ? addresses[0] : addresses[addresses.length - 1];
+            var dest = addresses[ordering[orderingCount-1] - 1];
             var request = {
               origin: addresses[0],
               destination: dest,
