@@ -126,4 +126,5 @@ function reset() {
 	document.getElementById('drive').checked = true;
 	document.getElementById('walk').checked = false;
 	document.getElementById('cycle').checked = false;
+	document.getElementById('startaddr').focus();
 }			
