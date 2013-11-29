@@ -8,6 +8,8 @@ var mode;  /** type{string} traveling mode.  e.g. 'DRIVING'. */
 var start;  /** type{string} starting address */
 var waypoints;  /** type{Array.<string>} list of other addresses */
 var addresses;  /** type{Array.<string>} list of all addresses */
+var costMatrix; /** type{Array.<Array.<number>>} travel cost matrix */
+var costMatrixRows;  /** type{number} number of defined rows in costMatrix. */
 
 /**
  * Called when the page is loaded and performs all needed initialization.
@@ -49,44 +51,67 @@ function calcRoute() {
   // Remove empty addresses.
   waypoints = waypoints.filter(function(value) { return value; });
   addresses = [start].concat(waypoints);
-  var dmRequest = {
-    origins: addresses,
-    destinations: addresses,
-    travelMode: google.maps.TravelMode[mode]
-  };
-  console.log(addresses);
+  var n = addresses.length;
 
-  distanceMatrixService.getDistanceMatrix(dmRequest, distanceMatrixCallback);
+  // If there are more than 10 addresses, we need to break this up into
+  // multiple requests.  Rows correspond to origins.
+  var maxRowsPerRequest = Math.min(Math.floor(100 / n), n);
+
+  // Clear out matrix
+  costMatrix = [];
+  costMatrixRows = 0;
+  for (var row=0; row < n; row += maxRowsPerRequest) {
+    var dmRequest = {
+      origins: addresses.slice(row, Math.min(row + maxRowsPerRequest, n)),
+      destinations: addresses,
+      travelMode: google.maps.TravelMode[mode]
+    };
+    console.log(dmRequest);
+
+    distanceMatrixService.getDistanceMatrix(dmRequest,
+        distanceMatrixCallback.bind(undefined, row));
+  }
 }
 
 /**
  * Callback handler for a call to the distanceMatrix service.
  *
+ * @param {number} row the index of the first row of the results.
  * @param {DistanceMatrixResponse} dmResponse matrix containing distances.
  * @param {DistanceMatrixStatus} dmStatus string status.  e.g. 'OK'.
  */
-function distanceMatrixCallback(dmResponse, dmStatus) {
+function distanceMatrixCallback(row, dmResponse, dmStatus) {
   console.log(dmResponse);
   console.log(dmStatus);
-  // Update addresses with format provided by Google Maps
+  // Save addresses with format provided by Google Maps
   addresses = dmResponse.destinationAddresses;
   document.getElementById('startaddr').value = addresses[0];
-  var matrix = makeJsonMatrix(dmResponse);
-  var requestObj = {
-    'start': 1,
-    'n': matrix.length,
-    'travelMatrix': matrix,
-  };
-  if (document.getElementById('return').checked) {
-    requestObj.end = 1;
+  var subMatrix = makeCostMatrix(dmResponse);
+  for (var i = 0; i < subMatrix.length; i++) {
+    costMatrix[i + row] = subMatrix[i];
   }
-  var request = JSON.stringify(requestObj);
-  console.log(request);
-  var http = new XMLHttpRequest();
-  http.addEventListener('loadend', renderRoute, false);
-  http.open("POST", "lpsolver/solver.request", true);
-  http.setRequestHeader("Content-type", "application/json");
-  http.send(request);
+  costMatrixRows += subMatrix.length;
+
+  // Send message to python server if we have all the rows back.
+  if (costMatrixRows == addresses.length) {
+    var requestObj = {
+      'start': 1,
+      'n': costMatrix.length,
+      'travelMatrix': costMatrix,
+    };
+    if (document.getElementById('return').checked) {
+      requestObj['end'] = 1;
+    }
+    var request = JSON.stringify(requestObj);
+    console.log(request);
+
+    // Send request to main server to solve the traveling salesperson problem.
+    var http = new XMLHttpRequest();
+    http.addEventListener('loadend', renderRoute, false);
+    http.open("POST", "lpsolver/solver.request", true);
+    http.setRequestHeader("Content-type", "application/json");
+    http.send(request);
+  }
 }
 
 /**
@@ -132,7 +157,14 @@ function renderRoute(e) {
   }
 }
 
-function makeJsonMatrix(dmResponse) {
+/**
+ * Creates a simple cost matrix from the distanceMatrix response.
+ *
+ * @param{DistanceMatrixResponse} dmResponse.
+ * @returns{Array.<Array.<number>>} cost matrix with origins in the rows
+ *     and destinations in the columns.
+ */
+function makeCostMatrix(dmResponse) {
   var rows = dmResponse.rows;
   var matrix = [];
   for (var row = 0; row < rows.length; row++) {
