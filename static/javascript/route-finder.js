@@ -120,12 +120,19 @@ function makeJsonMatrix(dmResponse) {
 }
 
 function reset() {
-	document.getElementById('computed-route').style.display = 'none';
-	document.getElementById('startaddr').value = "";
-	document.getElementById('destaddr').value = "";
-	document.getElementById('return').checked = true;
-	document.getElementById('drive').checked = true;
-	document.getElementById('walk').checked = false;
-	document.getElementById('cycle').checked = false;
-	document.getElementById('startaddr').focus();
+    document.getElementById('computed-route').style.display = 'none';
+    document.getElementById('startaddr').value = "";
+    document.getElementById('destaddr').value = "";
+    document.getElementById('return').checked = true;
+    document.getElementById('drive').checked = true;
+    document.getElementById('walk').checked = false;
+    document.getElementById('cycle').checked = false;
+    document.getElementById('startaddr').focus();
+}
+
+window.onresize = function(event) {
+    if(window.outerHeight/screen.height < 0.96)   
+        document.getElementById('route-finder').style.overflow = 'auto';
+    else
+        document.getElementById('route-finder').style.overflow = '';
 }
