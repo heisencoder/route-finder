@@ -26,12 +26,12 @@ function calcRoute() {
 
   var radio_mode = document.getElementsByName('travelmode');
   for(var i=0; i<radio_mode.length; i++) {
-	if(radio_mode[i].checked) {
-		mode = radio_mode[i].value;
-		break;
-        }
+    if(radio_mode[i].checked) {
+      mode = radio_mode[i].value;
+      break;
+    }
   }
-  
+
   // Strip off leading and trailing whitespace.
   waypoints = waypoints.map(function(value) {
     return value.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -52,11 +52,6 @@ function calcRoute() {
         console.log(dmStatus);
         var addresses = dmResponse.originAddresses;
 	document.getElementById('startaddr').value = addresses[0];
-	waypoints = "";
-	for(var i=1; i<addresses.length; i++) {
-		waypoints = waypoints + addresses[i]+'\n';
-	}
-	document.getElementById('destaddr').value = waypoints;
         var matrix = makeJsonMatrix(dmResponse);
         var requestObj = {
           'start': 1,
@@ -77,17 +72,23 @@ function calcRoute() {
             console.log(ordering);
             var waypts = [];
             var orderingCount = ordering.length;
+            var displayAddrs = []
             for (var i = 1; i < orderingCount-1; i++) {
               waypts.push({
                 location: addresses[ordering[i]-1],
                 stopover: true});
+              displayAddrs.push(addresses[ordering[i]-1]);
             }
             var dest = addresses[ordering[orderingCount-1] - 1];
+            if (!returnToStart) {
+              displayAddrs.push(dest);
+            }
+            document.getElementById('destaddr').value = displayAddrs.join('\n');
             var request = {
               origin: addresses[0],
               destination: dest,
               waypoints: waypts,
-              optimizeWaypoints: true,
+              optimizeWaypoints: false,
               travelMode: google.maps.TravelMode[mode]
             };
             console.log(request);
@@ -127,4 +128,4 @@ function reset() {
 	document.getElementById('walk').checked = false;
 	document.getElementById('cycle').checked = false;
 	document.getElementById('startaddr').focus();
-}			
+}
