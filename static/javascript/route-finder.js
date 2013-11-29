@@ -23,6 +23,12 @@ function initialize() {
   directionsDisplay.setPanel(document.getElementById('directions-panel'));
 }
 
+/**
+ * Listener that is called when the user clicks "Submit".
+ *
+ * This function computes the optimal route, displays it on a map, and
+ * replaces the Destinations text area with the optimal route
+ */
 function calcRoute() {
   start = document.getElementById('startaddr').value;
   waypoints = document.getElementById('destaddr').value.split('\n');
@@ -53,10 +59,17 @@ function calcRoute() {
   distanceMatrixService.getDistanceMatrix(dmRequest, distanceMatrixCallback);
 }
 
+/**
+ * Callback handler for a call to the distanceMatrix service.
+ *
+ * @param {DistanceMatrixResponse} dmResponse matrix containing distances.
+ * @param {DistanceMatrixStatus} dmStatus string status.  e.g. 'OK'.
+ */
 function distanceMatrixCallback(dmResponse, dmStatus) {
   console.log(dmResponse);
   console.log(dmStatus);
-  var addresses = dmResponse.originAddresses;
+  // Update addresses with format provided by Google Maps
+  addresses = dmResponse.destinationAddresses;
   document.getElementById('startaddr').value = addresses[0];
   var matrix = makeJsonMatrix(dmResponse);
   var requestObj = {
@@ -64,51 +77,59 @@ function distanceMatrixCallback(dmResponse, dmStatus) {
     'n': matrix.length,
     'travelMatrix': matrix,
   };
-  var returnToStart = document.getElementById('return').checked;
-  if (returnToStart) {
+  if (document.getElementById('return').checked) {
     requestObj.end = 1;
   }
   var request = JSON.stringify(requestObj);
   console.log(request);
   var http = new XMLHttpRequest();
-  http.addEventListener('loadend', function(e) {
-    var response = e.target;
-    if (response.status == 200) {
-      var ordering = JSON.parse(response.response);
-      console.log(ordering);
-      var waypts = [];
-      var orderingCount = ordering.length;
-      var displayAddrs = []
-      for (var i = 1; i < orderingCount-1; i++) {
-        waypts.push({
-          location: addresses[ordering[i]-1],
-          stopover: true});
-        displayAddrs.push(addresses[ordering[i]-1]);
-      }
-      var dest = addresses[ordering[orderingCount-1] - 1];
-      if (!returnToStart) {
-        displayAddrs.push(dest);
-      }
-      document.getElementById('destaddr').value = displayAddrs.join('\n');
-      var request = {
-        origin: addresses[0],
-        destination: dest,
-        waypoints: waypts,
-        optimizeWaypoints: false,
-        travelMode: google.maps.TravelMode[mode]
-      };
-      console.log(request);
-      directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(response);
-          document.getElementById('computed-route').style.display = 'block';
-        }
-      });
-    }
-  }, false);
+  http.addEventListener('loadend', renderRoute, false);
   http.open("POST", "lpsolver/solver.request", true);
   http.setRequestHeader("Content-type", "application/json");
   http.send(request);
+}
+
+/**
+ * Renders the optimal route on the map
+ *
+ * @param {Event} e event object containing the response in '.target'.
+ */
+function renderRoute(e) {
+  var response = e.target;
+  if (response.status == 200) {
+    var ordering = JSON.parse(response.response);
+    console.log(ordering);
+    var waypts = [];
+    var orderingCount = ordering.length;
+    var displayAddrs = []
+    for (var i = 1; i < orderingCount-1; i++) {
+      waypts.push({
+        location: addresses[ordering[i]-1],
+        stopover: true});
+      displayAddrs.push(addresses[ordering[i]-1]);
+    }
+    var dest = addresses[ordering[orderingCount-1] - 1];
+    if (!document.getElementById('return').checked) {
+      displayAddrs.push(dest);
+    }
+    document.getElementById('destaddr').value = displayAddrs.join('\n');
+    var request = {
+      origin: addresses[0],
+      destination: dest,
+      waypoints: waypts,
+      optimizeWaypoints: false,
+      travelMode: google.maps.TravelMode[mode]
+    };
+    console.log(request);
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        document.getElementById('computed-route').style.display = 'block';
+      }
+    });
+  } else {
+    alert('Received response HTTP status ' + response.status);
+  }
 }
 
 function makeJsonMatrix(dmResponse) {
