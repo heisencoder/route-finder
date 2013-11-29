@@ -1,8 +1,13 @@
 'use strict';
-var directionsDisplay;
+
+var directionsDisplay;  /** type{google.maps.DirectionsRenderer} */
 var directionsService = new google.maps.DirectionsService();
 var distanceMatrixService = new google.maps.DistanceMatrixService();
-var map,mode,start,waypoints;
+var map;  /** type{google.maps.Map} Object describing visible map. */
+var mode;  /** type{string} traveling mode.  e.g. 'DRIVING'. */
+var start;  /** type{string} starting address */
+var waypoints;  /** type{Array.<string>} list of other addresses */
+var addresses;  /** type{Array.<string>} list of all addresses */
 
 /**
  * Called when the page is loaded and performs all needed initialization.
@@ -10,11 +15,10 @@ var map,mode,start,waypoints;
 function initialize() {
   directionsDisplay = new google.maps.DirectionsRenderer();
   var mapOptions = {
-    center: new google.maps.LatLng(40.006756,-105.263618),
+    center: new google.maps.LatLng(40.006756,-105.263618),  // C.U. Boulder
     zoom: 13
   };
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directions-panel'));
 }
@@ -38,7 +42,7 @@ function calcRoute() {
   });
   // Remove empty addresses.
   waypoints = waypoints.filter(function(value) { return value; });
-  var addresses = [start].concat(waypoints);
+  addresses = [start].concat(waypoints);
   var dmRequest = {
     origins: addresses,
     destinations: addresses,
@@ -46,64 +50,65 @@ function calcRoute() {
   };
   console.log(addresses);
 
-  distanceMatrixService.getDistanceMatrix(dmRequest,
-      function(dmResponse, dmStatus) {
-        console.log(dmResponse);
-        console.log(dmStatus);
-        var addresses = dmResponse.originAddresses;
-	document.getElementById('startaddr').value = addresses[0];
-        var matrix = makeJsonMatrix(dmResponse);
-        var requestObj = {
-          'start': 1,
-          'n': matrix.length,
-          'travelMatrix': matrix,
-        };
-        var returnToStart = document.getElementById('return').checked;
-        if (returnToStart) {
-          requestObj.end = 1;
+  distanceMatrixService.getDistanceMatrix(dmRequest, distanceMatrixCallback);
+}
+
+function distanceMatrixCallback(dmResponse, dmStatus) {
+  console.log(dmResponse);
+  console.log(dmStatus);
+  var addresses = dmResponse.originAddresses;
+  document.getElementById('startaddr').value = addresses[0];
+  var matrix = makeJsonMatrix(dmResponse);
+  var requestObj = {
+    'start': 1,
+    'n': matrix.length,
+    'travelMatrix': matrix,
+  };
+  var returnToStart = document.getElementById('return').checked;
+  if (returnToStart) {
+    requestObj.end = 1;
+  }
+  var request = JSON.stringify(requestObj);
+  console.log(request);
+  var http = new XMLHttpRequest();
+  http.addEventListener('loadend', function(e) {
+    var response = e.target;
+    if (response.status == 200) {
+      var ordering = JSON.parse(response.response);
+      console.log(ordering);
+      var waypts = [];
+      var orderingCount = ordering.length;
+      var displayAddrs = []
+      for (var i = 1; i < orderingCount-1; i++) {
+        waypts.push({
+          location: addresses[ordering[i]-1],
+          stopover: true});
+        displayAddrs.push(addresses[ordering[i]-1]);
+      }
+      var dest = addresses[ordering[orderingCount-1] - 1];
+      if (!returnToStart) {
+        displayAddrs.push(dest);
+      }
+      document.getElementById('destaddr').value = displayAddrs.join('\n');
+      var request = {
+        origin: addresses[0],
+        destination: dest,
+        waypoints: waypts,
+        optimizeWaypoints: false,
+        travelMode: google.maps.TravelMode[mode]
+      };
+      console.log(request);
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+          document.getElementById('computed-route').style.display = 'block';
         }
-        var request = JSON.stringify(requestObj);
-        console.log(request);
-        var http = new XMLHttpRequest();
-        http.addEventListener('loadend', function(e) {
-          var response = e.target;
-          if (response.status == 200) {
-            var ordering = JSON.parse(response.response);
-            console.log(ordering);
-            var waypts = [];
-            var orderingCount = ordering.length;
-            var displayAddrs = []
-            for (var i = 1; i < orderingCount-1; i++) {
-              waypts.push({
-                location: addresses[ordering[i]-1],
-                stopover: true});
-              displayAddrs.push(addresses[ordering[i]-1]);
-            }
-            var dest = addresses[ordering[orderingCount-1] - 1];
-            if (!returnToStart) {
-              displayAddrs.push(dest);
-            }
-            document.getElementById('destaddr').value = displayAddrs.join('\n');
-            var request = {
-              origin: addresses[0],
-              destination: dest,
-              waypoints: waypts,
-              optimizeWaypoints: false,
-              travelMode: google.maps.TravelMode[mode]
-            };
-            console.log(request);
-            directionsService.route(request, function(response, status) {
-              if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(response);
-		document.getElementById('computed-route').style.display = 'block';
-              }
-            });
-          }
-        }, false);
-        http.open("POST", "lpsolver/solver.request", true);
-        http.setRequestHeader("Content-type", "application/json");
-        http.send(request);
       });
+    }
+  }, false);
+  http.open("POST", "lpsolver/solver.request", true);
+  http.setRequestHeader("Content-type", "application/json");
+  http.send(request);
 }
 
 function makeJsonMatrix(dmResponse) {
@@ -131,7 +136,7 @@ function reset() {
 }
 
 window.onresize = function(event) {
-    if(window.outerHeight/screen.height < 0.96)   
+    if(window.outerHeight/screen.height < 0.96)
         document.getElementById('route-finder').style.overflow = 'auto';
     else
         document.getElementById('route-finder').style.overflow = '';
