@@ -10,6 +10,9 @@ var waypoints;  /** type{Array.<string>} list of other addresses */
 var addresses;  /** type{Array.<string>} list of all addresses */
 var costMatrix; /** type{Array.<Array.<number>>} travel cost matrix */
 var costMatrixRows;  /** type{number} number of defined rows in costMatrix. */
+/** type{number} maximun number of rows that we can call in one invokation to
+ *    the DistanceMatrixService */
+var maxRowsPerRequest;
 
 /**
  * Called when the page is loaded and performs all needed initialization.
@@ -55,22 +58,31 @@ function calcRoute() {
 
   // If there are more than 10 addresses, we need to break this up into
   // multiple requests.  Rows correspond to origins.
-  var maxRowsPerRequest = Math.min(Math.floor(100 / n), n);
+  maxRowsPerRequest = Math.min(Math.floor(100 / n), n);
 
   // Clear out matrix
   costMatrix = [];
   costMatrixRows = 0;
-  for (var row=0; row < n; row += maxRowsPerRequest) {
-    var dmRequest = {
-      origins: addresses.slice(row, Math.min(row + maxRowsPerRequest, n)),
-      destinations: addresses,
-      travelMode: google.maps.TravelMode[mode]
-    };
-    console.log(dmRequest);
 
-    distanceMatrixService.getDistanceMatrix(dmRequest,
-        distanceMatrixCallback.bind(undefined, row));
-  }
+  // Get first results
+  callDistanceMatrixService(0);
+}
+
+/**
+ * Call the DistanceMatrixService starting at an origin given by 'row'.
+ * @param {number} row The first row of the origins to get information for.
+ */
+function callDistanceMatrixService(row) {
+  var dmRequest = {
+    origins: addresses.slice(row,
+        Math.min(row + maxRowsPerRequest, addresses.length)),
+    destinations: addresses,
+    travelMode: google.maps.TravelMode[mode]
+  };
+  console.log(dmRequest);
+
+  distanceMatrixService.getDistanceMatrix(dmRequest,
+      distanceMatrixCallback.bind(undefined, row));
 }
 
 /**
@@ -81,8 +93,14 @@ function calcRoute() {
  * @param {DistanceMatrixStatus} dmStatus string status.  e.g. 'OK'.
  */
 function distanceMatrixCallback(row, dmResponse, dmStatus) {
+  console.log(row);
   console.log(dmResponse);
   console.log(dmStatus);
+  if (dmStatus != google.maps.DistanceMatrixStatus.OK) {
+    // TODO: put in better error handling for errors
+    alert('Got error status: ' + dmStatus);
+    return;
+  }
   // Save addresses with format provided by Google Maps
   addresses = dmResponse.destinationAddresses;
   document.getElementById('startaddr').value = addresses[0];
@@ -111,6 +129,12 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     http.open("POST", "lpsolver/solver.request", true);
     http.setRequestHeader("Content-type", "application/json");
     http.send(request);
+  } else {
+    // Need to make another call to get more results.
+    // Use a delay to avoid getting rate throttled by the Maps API.
+    setTimeout(
+        callDistanceMatrixService.bind(undefined, row + maxRowsPerRequest),
+        11000);
   }
 }
 
@@ -128,11 +152,14 @@ function renderRoute(e) {
     var orderingCount = ordering.length;
     var displayAddrs = []
     for (var i = 1; i < orderingCount-1; i++) {
-      waypts.push({
-        location: addresses[ordering[i]-1],
-        stopover: true});
+      if (i <= 8) {
+        waypts.push({
+          location: addresses[ordering[i]-1],
+          stopover: true});
+      }
       displayAddrs.push(addresses[ordering[i]-1]);
     }
+    // TODO: correctly handle case where there are more than 10 destinations.
     var dest = addresses[ordering[orderingCount-1] - 1];
     if (!document.getElementById('return').checked) {
       displayAddrs.push(dest);
@@ -153,6 +180,7 @@ function renderRoute(e) {
       }
     });
   } else {
+    // TODO: improve error handling
     alert('Received response HTTP status ' + response.status);
   }
 }
