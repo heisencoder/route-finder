@@ -37,6 +37,9 @@ function initialize() {
 function calcRoute() {
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('submit').disabled = true;
+  document.getElementById('reset').disabled = true;
+  document.getElementById('error').style.display = 'none';
+
   start = document.getElementById('startaddr').value;
   waypoints = document.getElementById('destaddr').value.split('\n');
   mode = "DRIVING";
@@ -114,6 +117,8 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     document.getElementById('error').style.display = 'block';
     document.getElementById('computed-route').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('submit').disabled = false;
+    document.getElementById('reset').disabled = false;
     return;
   }
   for (var i = 0; i < subMatrix.length; i++) {
@@ -195,6 +200,8 @@ function renderRoute(e) {
         document.getElementById('progress-bar').style.display = 'none';
         document.getElementById('submit').disabled = false;
         document.getElementById('error').style.display = 'none';
+        document.getElementById('submit').disabled = false;
+        document.getElementById('reset').disabled = false;
       }
     });
   } else {
