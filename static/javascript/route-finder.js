@@ -214,8 +214,8 @@ function makeCostMatrix(dmResponse) {
       matrix[row][col] = elements[col].distance.value;
     }
   }
-  return matrix;
   document.getElementById('progress').value = document.getElementById('progress').value + 10;
+  return matrix;
 }
 
 function reset() {
