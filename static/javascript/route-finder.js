@@ -110,6 +110,10 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
   addresses = dmResponse.destinationAddresses;
   document.getElementById('startaddr').value = addresses[0];
   var subMatrix = makeCostMatrix(dmResponse);
+  if (!subMatrix) {
+    alert('Unable to create distance matrix.');
+    return;
+  }
   for (var i = 0; i < subMatrix.length; i++) {
     costMatrix[i + row] = subMatrix[i];
   }
@@ -214,7 +218,7 @@ function makeCostMatrix(dmResponse) {
       if (elements[col].status == 'OK') {
         matrix[row][col] = elements[col].distance.value;
       } else {
-        matrix[row][col] = Infinity;
+        return null; // Not a valid distance matrix
       }
     }
   }
