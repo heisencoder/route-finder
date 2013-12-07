@@ -218,8 +218,8 @@ function makeCostMatrix(dmResponse) {
       }
     }
   }
-  return matrix;
   document.getElementById('progress').value = document.getElementById('progress').value + 10;
+  return matrix;
 }
 
 function reset() {
