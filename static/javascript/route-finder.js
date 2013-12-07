@@ -37,7 +37,6 @@ function initialize() {
 function calcRoute() {
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('submit').disabled = true;
-  document.getElementById('reset').disabled = true;
   start = document.getElementById('startaddr').value;
   waypoints = document.getElementById('destaddr').value.split('\n');
   mode = "DRIVING";
@@ -111,7 +110,10 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
   document.getElementById('startaddr').value = addresses[0];
   var subMatrix = makeCostMatrix(dmResponse);
   if (!subMatrix) {
-    alert('Unable to create distance matrix.');
+    document.getElementById('error-msg').innerHTML = 'The distance between the locations is too large !';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('computed-route').style.display = 'none';
+    document.getElementById('progress-bar').style.display = 'none';
     return;
   }
   for (var i = 0; i < subMatrix.length; i++) {
@@ -192,7 +194,7 @@ function renderRoute(e) {
         document.getElementById('computed-route').style.display = 'block';
         document.getElementById('progress-bar').style.display = 'none';
         document.getElementById('submit').disabled = false;
-        document.getElementById('reset').disabled = false;
+        document.getElementById('error').style.display = 'none';
       }
     });
   } else {
@@ -229,6 +231,7 @@ function makeCostMatrix(dmResponse) {
 function reset() {
     document.getElementById('computed-route').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
     document.getElementById('startaddr').value = "";
     document.getElementById('destaddr').value = "";
     document.getElementById('return').checked = true;

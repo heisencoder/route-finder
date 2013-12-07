@@ -33,3 +33,7 @@ input:-moz-placeholder { font-family: 'Times New Roman'; font-size: 14px; font-s
 #computed-route { display: none; height: 45%;}
 
 #progress-bar { display: none; }
+
+#error { display: none; }
+
+#error-msg { color: red; }
