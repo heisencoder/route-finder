@@ -1,106 +1,35 @@
-html, body    {
-		height: 100%;
-		margin: 0px;
-		padding: 0px;
-              }
+html, body { height: 100%; margin: 0px; padding: 0px; }
 
-h4 	      {
+h4 { font-size: 20px; font-weight: 1000; padding: 3px 0px 0px 8px;margin: 0; }
 
-		font-size: 20px;
-		font-weight: 1000;
-		padding: 3px 0px 0px 8px;
-		margin: 0
-	      }
+::-webkit-input-placeholder { font-family: 'Times New Roman'; font-size: 14px; font-style: normal; font-variant: normal; }
 
-::-webkit-input-placeholder { 
-		font-family: 'Times New Roman';
-		font-size: 14px;
-		font-style: normal;
-		font-variant: normal; 
-               }
+::-moz-placeholder { font-family: 'Times New Roman'; font-size: 14px; font-style: normal; font-variant: normal; } /* firefox 19+ */
 
-::-moz-placeholder { 
-	      	font-family: 'Times New Roman';
-		font-size: 14px;
-		font-style: normal;
-		font-variant: normal;
-	       } /* firefox 19+ */
+:-ms-input-placeholder { font-family: 'Times New Roman'; font-size: 14px; font-style: normal; font-variant: normal; } /* ie */
 
-:-ms-input-placeholder { 
-		font-family: 'Times New Roman';
-		font-size: 14px;
-		font-style: normal;
-		font-variant: normal;
-	       } /* ie */
+input:-moz-placeholder { font-family: 'Times New Roman'; font-size: 14px; font-style: normal; font-variant: normal; }
 
-input:-moz-placeholder { 
-		font-family: 'Times New Roman';
-		font-size: 14px;
-		font-style: normal;
-		font-variant: normal;
- 	       }
+#route-finder { position: absolute; width: 366px; height: 96%; float:left; background-color: white; display:block; }
 
-#route-finder {
-		position: absolute;
-		width: 366px;
-		height: 99.5%;
-		float:left;
-		background-color: white;
-		display:block;
-	      }
+#content { line-height: 25px; width: 100%; height: 95%; }
 
-#content      {
-		line-height: 25px;
-		width: 100%;
-		height: 95%;
-	      }
+#map-canvas { height: 100%; margin: 0px; padding: 0px; margin-left:366px }
 
-#map-canvas   {
-		height: 100%;
-		margin: 0px;
-		padding: 0px;
-		margin-left:366px
-	      }
+#startaddr { margin-left: 19px; width: 300px; font-family: 'Arial'; font-size: 13px; }
 
-#startaddr    {
-		margin-left: 19px;
-		width: 300px;
-		font-family: 'Arial';
-		font-size: 13px;
-	      }
+#destaddr { margin-left: 19px; vertical-align:top; width:300px; font-family: 'Arial'; font-size: 13px; }
 
-#destaddr     {
-		margin-left: 19px;
-		vertical-align:top;
-		width:300px;
-		font-family: 'Arial';
-		font-size: 13px;
-	      }
-.adp 	      {
-		margin-left: 19px;
-		font-size: 14px;
-	      }
+.adp { margin-left: 19px; font-size: 14px; }
 
-#submit,#reset{
-	    	font-weight: bold;
-	      }
+#submit,#reset { font-weight: bold; }
 
-#submit       {
-		margin-left:90px;
-		width: 61px;
-	      }
+#submit { margin-left:90px; width: 61px; }
 
-#reset        {
-		margin-left: 30px;
-		width: 61px;
-	      }	
+#reset { margin-left: 30px; width: 61px; }	
 
-#directions-panel {
-		height: 650px;
-	        width: 320px;
-	        overflow: auto;
-		margin-left: 0px;
-       	     }	
-#computed-route {
-		display: none;
-		}
+#directions-panel { height: 99%; width: 320px; overflow: auto; margin-left: 0px; }	
+
+#computed-route { display: none; height: 45%;}
+
+#progress-bar { display: none; }

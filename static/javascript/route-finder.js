@@ -35,6 +35,9 @@ function initialize() {
  * replaces the Destinations text area with the optimal route
  */
 function calcRoute() {
+  document.getElementById('progress-bar').style.display = 'block';
+  document.getElementById('submit').disabled = true;
+  document.getElementById('reset').disabled = true;
   start = document.getElementById('startaddr').value;
   waypoints = document.getElementById('destaddr').value.split('\n');
   mode = "DRIVING";
@@ -46,7 +49,7 @@ function calcRoute() {
       break;
     }
   }
-
+  document.getElementById('progress').value = 20;
   // Strip off leading and trailing whitespace.
   waypoints = waypoints.map(function(value) {
     return value.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -83,6 +86,7 @@ function callDistanceMatrixService(row) {
 
   distanceMatrixService.getDistanceMatrix(dmRequest,
       distanceMatrixCallback.bind(undefined, row));
+  document.getElementById('progress').value = document.getElementById('progress').value + 20;
 }
 
 /**
@@ -101,6 +105,7 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     alert('Got error status: ' + dmStatus);
     return;
   }
+
   // Save addresses with format provided by Google Maps
   addresses = dmResponse.destinationAddresses;
   document.getElementById('startaddr').value = addresses[0];
@@ -129,12 +134,15 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     http.open("POST", "lpsolver/solver.request", true);
     http.setRequestHeader("Content-type", "application/json");
     http.send(request);
-  } else {
+    document.getElementById('progress').value = document.getElementById('progress').value + 20;
+  }
+  else {
     // Need to make another call to get more results.
     // Use a delay to avoid getting rate throttled by the Maps API.
     setTimeout(
         callDistanceMatrixService.bind(undefined, row + maxRowsPerRequest),
         11000);
+    document.getElementById('progress').value = document.getElementById('progress').value + 10;
   }
 }
 
@@ -159,6 +167,7 @@ function renderRoute(e) {
       }
       displayAddrs.push(addresses[ordering[i]-1]);
     }
+    document.getElementById('progress').value = document.getElementById('progress').value + 20;
     // TODO: correctly handle case where there are more than 10 destinations.
     var dest = addresses[ordering[orderingCount-1] - 1];
     if (!document.getElementById('return').checked) {
@@ -177,6 +186,9 @@ function renderRoute(e) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
         document.getElementById('computed-route').style.display = 'block';
+        document.getElementById('progress-bar').style.display = 'none';
+        document.getElementById('submit').disabled = false;
+        document.getElementById('reset').disabled = false;
       }
     });
   } else {
@@ -203,10 +215,12 @@ function makeCostMatrix(dmResponse) {
     }
   }
   return matrix;
+  document.getElementById('progress').value = document.getElementById('progress').value + 10;
 }
 
 function reset() {
     document.getElementById('computed-route').style.display = 'none';
+    document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('startaddr').value = "";
     document.getElementById('destaddr').value = "";
     document.getElementById('return').checked = true;
@@ -217,8 +231,8 @@ function reset() {
 }
 
 window.onresize = function(event) {
-    if(window.outerHeight/screen.height < 0.96)
+    if(window.outerHeight/screen.height < 0.96) 
         document.getElementById('route-finder').style.overflow = 'auto';
-    else
+    else 
         document.getElementById('route-finder').style.overflow = '';
 }
