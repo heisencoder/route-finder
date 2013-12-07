@@ -211,7 +211,11 @@ function makeCostMatrix(dmResponse) {
     matrix[row] = [];
     var elements = rows[row].elements;
     for (var col = 0; col < elements.length; col++) {
-      matrix[row][col] = elements[col].distance.value;
+      if (elements[col] == 'OK') {
+        matrix[row][col] = elements[col].distance.value;
+      } else {
+        matrix[row][col] = Infinity;
+      }
     }
   }
   return matrix;
