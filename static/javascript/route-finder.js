@@ -258,6 +258,9 @@ function makeCostMatrix(dmResponse) {
   return matrix;
 }
 
+/**
+ * Resets all fields to their original state 
+*/
 function reset() {
     document.getElementById('computed-route').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
@@ -271,6 +274,9 @@ function reset() {
     document.getElementById('startaddr').focus();
 }
 
+/**
+ * Resizing contents when the window is resized 
+*/
 window.onresize = function(event) {
     if(window.outerHeight/screen.height < 0.96)
         document.getElementById('route-finder').style.overflow = 'auto';
