@@ -17,11 +17,11 @@
 	<div id="content">
 		<b>Starting address: </b>
 		<br/> 
-		<input type="text" id="startaddr" placeholder="Enter the starting address" autofocus required />
+		<input type="text" id="startaddr" placeholder="Enter the starting address" autofocus />
 		<br/>
 		<b>Destination(s): </b>
 		<br/>
-		<textarea rows="5" cols="50" id="destaddr" placeholder="Enter the address of subsequent places of interest one per line" required ></textarea>
+		<textarea rows="5" cols="50" id="destaddr" placeholder="Enter the address of subsequent places of interest one per line" ></textarea>
 		<br/>
 		<b>Mode of travel: </b>
 		<br/>
@@ -31,7 +31,7 @@
 		<br/>
 		<input type="checkbox" id="return" checked="true">Return back to starting address
 		<br/>
-		<button type="submit" id="submit" onclick="calcRoute();">Submit</button>
+		<button type="submit" id="submit" onclick="validateForm();">Submit</button>
 		<button type="button" id="reset" onclick="reset();">Reset</button>
 		<br/>
         <div id="progress-bar">

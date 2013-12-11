@@ -29,21 +29,39 @@ function initialize() {
 }
 
 /**
+ * Validates the form fields and calls calcRoute() if all fields are valid
+ */
+function validateForm() {
+    if(document.getElementById('startaddr').value == "") {
+        setErrorMessage('Enter a starting address');
+        document.getElementById('startaddr').focus();
+        return;
+    }
+    else if(waypoints == "") {
+        setErrorMessage('Enter atleast one destination');
+        document.getElementById('destaddr').focus();
+        return;
+    }
+    else
+        calcRoute();
+}
+
+/**
  * Listener that is called when the user clicks "Submit".
  *
  * This function computes the optimal route, displays it on a map, and
  * replaces the Destinations text area with the optimal route
  */
 function calcRoute() {
+
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('submit').disabled = true;
   document.getElementById('reset').disabled = true;
   document.getElementById('error').style.display = 'none';
 
   start = document.getElementById('startaddr').value;
-  waypoints = document.getElementById('destaddr').value.split('\n');
-  mode = "DRIVING";
-
+  waypoints = document.getElementById('destaddr').value.split('\n');      
+  
   var radio_mode = document.getElementsByName('travelmode');
   for(var i=0; i<radio_mode.length; i++) {
     if(radio_mode[i].checked) {
@@ -71,6 +89,19 @@ function calcRoute() {
 
   // Get first results
   callDistanceMatrixService(0);
+}
+
+/**
+ * Set erro message
+ * @param {msg} The error message to be displayed
+*/
+function setErrorMessage(msg) {
+    document.getElementById('error-msg').innerHTML = msg;
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('computed-route').style.display = 'none';
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('submit').disabled = false;
+    document.getElementById('reset').disabled = false;
 }
 
 /**
@@ -113,12 +144,7 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
   document.getElementById('startaddr').value = addresses[0];
   var subMatrix = makeCostMatrix(dmResponse);
   if (!subMatrix) {
-    document.getElementById('error-msg').innerHTML = 'The distance between the locations is too large !';
-    document.getElementById('error').style.display = 'block';
-    document.getElementById('computed-route').style.display = 'none';
-    document.getElementById('progress-bar').style.display = 'none';
-    document.getElementById('submit').disabled = false;
-    document.getElementById('reset').disabled = false;
+    setErrorMessage('The distance between two or more locations is undefined!');
     return;
   }
   for (var i = 0; i < subMatrix.length; i++) {
