@@ -92,7 +92,7 @@ function calcRoute() {
 }
 
 /**
- * Set erro message
+ * Set error message
  * @param {msg} The error message to be displayed
 */
 function setErrorMessage(msg) {
@@ -134,8 +134,7 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
   console.log(dmResponse);
   console.log(dmStatus);
   if (dmStatus != google.maps.DistanceMatrixStatus.OK) {
-    // TODO: put in better error handling for errors
-    alert('Got error status: ' + dmStatus);
+    setErrorMessage('Got error status: ' + dmStatus);
     return;
   }
 
@@ -224,15 +223,13 @@ function renderRoute(e) {
         directionsDisplay.setDirections(response);
         document.getElementById('computed-route').style.display = 'block';
         document.getElementById('progress-bar').style.display = 'none';
-        document.getElementById('submit').disabled = false;
         document.getElementById('error').style.display = 'none';
         document.getElementById('submit').disabled = false;
         document.getElementById('reset').disabled = false;
       }
     });
   } else {
-    // TODO: improve error handling
-    alert('Received response HTTP status ' + response.status);
+    setErrorMessage('Received response HTTP status ' + response.status);
   }
 }
 
@@ -275,8 +272,8 @@ function reset() {
 }
 
 window.onresize = function(event) {
-    if(window.outerHeight/screen.height < 0.96) 
+    if(window.outerHeight/screen.height < 0.96)
         document.getElementById('route-finder').style.overflow = 'auto';
-    else 
+    else
         document.getElementById('route-finder').style.overflow = '';
 }
