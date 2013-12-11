@@ -37,7 +37,7 @@ function validateForm() {
         document.getElementById('startaddr').focus();
         return;
     }
-    else if(waypoints == "") {
+    else if(document.getElementById('destaddr').value == "") {
         setErrorMessage('Enter atleast one destination');
         document.getElementById('destaddr').focus();
         return;
