@@ -209,6 +209,9 @@ function renderRoute(e) {
     if (!document.getElementById('return').checked) {
       displayAddrs.push(dest);
     }
+    if (orderingCount > 10) {
+      dest = addresses[ordering[9]-1];
+    }
     document.getElementById('destaddr').value = displayAddrs.join('\n');
     var request = {
       origin: addresses[0],
