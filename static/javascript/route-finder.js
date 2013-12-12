@@ -120,7 +120,7 @@ function callDistanceMatrixService(row) {
   distanceMatrixService.getDistanceMatrix(dmRequest,
       distanceMatrixCallback.bind(undefined, row));
   document.getElementById('progress').value =
-      Math.round((row + 1) / addresses.length * 80);
+      Math.round(row / addresses.length * 80);
 }
 
 /**
@@ -179,7 +179,7 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
         callDistanceMatrixService.bind(undefined, row + maxRowsPerRequest),
         11000);
   }
-  document.getElementById('progress').value = Math.round(row / addresses.length * 80);
+  document.getElementById('progress').value = Math.round((row + 1) / addresses.length * 80);
 }
 
 /**
