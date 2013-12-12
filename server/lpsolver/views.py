@@ -1,3 +1,4 @@
+import datetime
 import json
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -6,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import pymprog
 
 def solveLP(n, data, returnBack):
+    startTime = datetime.datetime.now()
     V = range(1, n+1)
     E = data.keys()
 
@@ -52,6 +54,8 @@ def solveLP(n, data, returnBack):
     tour.sort(key=lambda t: n-y[t].primal-1) # organize links by car number in reverse
     # automatically includes trailing [1] if returnBack
     itinerary = [1] + [v[1] for v in tour]
+    endTime = datetime.datetime.now()
+    print "Time required to solve LP: %f" % (endTime - startTime).total_seconds()
 
     return itinerary
 
