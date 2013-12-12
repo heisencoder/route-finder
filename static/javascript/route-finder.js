@@ -54,14 +54,15 @@ function validateForm() {
  */
 function calcRoute() {
 
+  document.getElementById('progress').value = 0;
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('submit').disabled = true;
   document.getElementById('reset').disabled = true;
   document.getElementById('error').style.display = 'none';
 
   start = document.getElementById('startaddr').value;
-  waypoints = document.getElementById('destaddr').value.split('\n');      
-  
+  waypoints = document.getElementById('destaddr').value.split('\n');
+
   var radio_mode = document.getElementsByName('travelmode');
   for(var i=0; i<radio_mode.length; i++) {
     if(radio_mode[i].checked) {
@@ -69,7 +70,6 @@ function calcRoute() {
       break;
     }
   }
-  document.getElementById('progress').value = 20;
   // Strip off leading and trailing whitespace.
   waypoints = waypoints.map(function(value) {
     return value.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -119,7 +119,8 @@ function callDistanceMatrixService(row) {
 
   distanceMatrixService.getDistanceMatrix(dmRequest,
       distanceMatrixCallback.bind(undefined, row));
-  document.getElementById('progress').value = document.getElementById('progress').value + 20;
+  document.getElementById('progress').value =
+      Math.round((row + 1) / addresses.length * 80);
 }
 
 /**
@@ -170,7 +171,6 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     http.open("POST", "lpsolver/solver.request", true);
     http.setRequestHeader("Content-type", "application/json");
     http.send(request);
-    document.getElementById('progress').value = document.getElementById('progress').value + 20;
   }
   else {
     // Need to make another call to get more results.
@@ -178,8 +178,8 @@ function distanceMatrixCallback(row, dmResponse, dmStatus) {
     setTimeout(
         callDistanceMatrixService.bind(undefined, row + maxRowsPerRequest),
         11000);
-    document.getElementById('progress').value = document.getElementById('progress').value + 10;
   }
+  document.getElementById('progress').value = Math.round(row / addresses.length * 80);
 }
 
 /**
@@ -203,7 +203,7 @@ function renderRoute(e) {
       }
       displayAddrs.push(addresses[ordering[i]-1]);
     }
-    document.getElementById('progress').value = document.getElementById('progress').value + 20;
+    document.getElementById('progress').value = 90;
     // TODO: correctly handle case where there are more than 10 destinations.
     var dest = addresses[ordering[orderingCount-1] - 1];
     if (!document.getElementById('return').checked) {
@@ -254,12 +254,11 @@ function makeCostMatrix(dmResponse) {
       }
     }
   }
-  document.getElementById('progress').value = document.getElementById('progress').value + 10;
   return matrix;
 }
 
 /**
- * Resets all fields to their original state 
+ * Resets all fields to their original state
 */
 function reset() {
     document.getElementById('computed-route').style.display = 'none';
@@ -275,8 +274,8 @@ function reset() {
 }
 
 /**
- * Resizing contents when the window is resized 
-*/
+ * Resizing contents when the window is resized
+ */
 window.onresize = function(event) {
     if(window.outerHeight/screen.height < 0.96)
         document.getElementById('route-finder').style.overflow = 'auto';
